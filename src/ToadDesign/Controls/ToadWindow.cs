@@ -54,6 +54,10 @@ public class ToadWindow : Window
     public static readonly DependencyProperty ShowMaximizeButtonProperty = DependencyProperty.Register(
         nameof(ShowMaximizeButton), typeof(bool), typeof(ToadWindow), new PropertyMetadata(true));
 
+    /// <summary>Identifies the <see cref="ShowCloseButton"/> property.</summary>
+    public static readonly DependencyProperty ShowCloseButtonProperty = DependencyProperty.Register(
+        nameof(ShowCloseButton), typeof(bool), typeof(ToadWindow), new PropertyMetadata(true));
+
     // Shadow strength from the theme (Toad.Shadow.Opacity), pushed to the shadow windows outside the visual tree.
     private static readonly DependencyProperty ShadowOpacityProperty = DependencyProperty.Register(
         "ShadowOpacity", typeof(double), typeof(ToadWindow), new PropertyMetadata(0.28, (d, e) => ((ToadWindow)d)._shadow?.SetOpacity((double)e.NewValue)));
@@ -119,6 +123,16 @@ public class ToadWindow : Window
     {
         get => (bool)GetValue(ShowMaximizeButtonProperty);
         set => SetValue(ShowMaximizeButtonProperty, value);
+    }
+
+    /// <summary>
+    /// Whether the close button is shown; true by default. Hide it for a window the user must not close, such as a
+    /// progress window; Alt+F4 and the system menu still close the window unless <see cref="Window.Closing"/> cancels it.
+    /// </summary>
+    public bool ShowCloseButton
+    {
+        get => (bool)GetValue(ShowCloseButtonProperty);
+        set => SetValue(ShowCloseButtonProperty, value);
     }
 
     /// <summary>Window handles of the shadow parts (empty before the window handle exists).</summary>

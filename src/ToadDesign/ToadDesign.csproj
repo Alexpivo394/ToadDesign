@@ -4,7 +4,7 @@
         <AssemblyName Condition="'$(LabBuild)' != ''">ToadDesign$(LabBuild)</AssemblyName>
         <GenerateDocumentationFile>true</GenerateDocumentationFile>
         <PackageId>Alexpivo394.ToadDesign</PackageId>
-        <Version>0.1.0-preview.2</Version>
+        <Version>0.1.0-preview.3</Version>
         <Authors>Alexpivo394</Authors>
         <PackageTags>wpf;revit;mantine;theme;controls;dark-mode</PackageTags>
         <PackageReadmeFile>README.md</PackageReadmeFile>

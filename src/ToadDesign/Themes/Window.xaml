@@ -100,7 +100,8 @@
                                                 Visibility="{Binding ShowMaximizeButton, RelativeSource={RelativeSource TemplatedParent}, Converter={StaticResource Toad.BooleanToVisibility}}">
                                             <local:Icon x:Name="MaximizeIcon" Symbol="Square" Style="{StaticResource Toad.Style.CaptionIcon}"/>
                                         </Button>
-                                        <Button x:Name="PART_Close" Style="{StaticResource Toad.Style.CloseButton}">
+                                        <Button x:Name="PART_Close" Style="{StaticResource Toad.Style.CloseButton}"
+                                                Visibility="{Binding ShowCloseButton, RelativeSource={RelativeSource TemplatedParent}, Converter={StaticResource Toad.BooleanToVisibility}}">
                                             <local:Icon Symbol="X" Style="{StaticResource Toad.Style.CaptionIcon}"/>
                                         </Button>
                                     </StackPanel>

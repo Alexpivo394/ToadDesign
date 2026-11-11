@@ -115,6 +115,19 @@ public static class WindowChecks
         w.Close();
     }
 
+    public static void TitleBar_NoCloseButton()
+    {
+        var w = Show(x =>
+        {
+            x.ShowMaximizeButton = false;
+            x.ShowCloseButton = false;
+        });
+        var buttons = StyleChecks.Descendants(Part<FrameworkElement>(w, "PART_TitleBar")).OfType<System.Windows.Controls.Button>().Where(b => b.IsVisible).ToList();
+        Equal(1, buttons.Count, "only the minimize button");
+        Equal("PART_Minimize", buttons[0].Name, "the visible button is minimize");
+        w.Close();
+    }
+
     public static void Maximized_FitsWorkArea()
     {
         var w = Show();

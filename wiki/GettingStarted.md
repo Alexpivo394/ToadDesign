@@ -5,7 +5,7 @@
 Пакет — `Alexpivo394.ToadDesign`.
 
 ```xml
-<PackageReference Include="Alexpivo394.ToadDesign" Version="0.1.0-preview.2" />
+<PackageReference Include="Alexpivo394.ToadDesign" Version="0.1.0-preview.3" />
 ```
 
 > [!NOTE]
