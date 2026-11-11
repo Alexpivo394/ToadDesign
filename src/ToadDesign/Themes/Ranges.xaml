@@ -1,0 +1,207 @@
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:local="clr-namespace:ToadDesign">
+
+    <!-- ProgressBar: 8 px track, radius 4, accent fill; indeterminate runs a 30 % segment. -->
+    <Style x:Key="Toad.Style.ProgressBar" TargetType="ProgressBar">
+        <Setter Property="Height" Value="8"/>
+        <Setter Property="Background" Value="{DynamicResource Toad.Brush.Track}"/>
+        <Setter Property="Foreground" Value="{DynamicResource Toad.Brush.Accent}"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="ProgressBar">
+                    <Grid x:Name="TemplateRoot" ClipToBounds="True">
+                        <Border x:Name="PART_Track" CornerRadius="4" Background="{TemplateBinding Background}"/>
+                        <Border x:Name="PART_Indicator" CornerRadius="4" Background="{TemplateBinding Foreground}" HorizontalAlignment="Left"/>
+                        <Border x:Name="Runner" CornerRadius="4" Background="{TemplateBinding Foreground}" HorizontalAlignment="Left" Visibility="Collapsed"
+                                Width="{Binding ActualWidth, ElementName=PART_Track, Converter={x:Static local:FractionConverter.ThirtyPercent}}"
+                                local:ProgressRunner.IsRunning="{Binding IsIndeterminate, RelativeSource={RelativeSource TemplatedParent}}"/>
+                    </Grid>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsIndeterminate" Value="True">
+                            <Setter TargetName="PART_Indicator" Property="Visibility" Value="Collapsed"/>
+                            <Setter TargetName="Runner" Property="Visibility" Value="Visible"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+    <Style TargetType="ProgressBar" BasedOn="{StaticResource Toad.Style.ProgressBar}"/>
+
+    <!-- Slider: 4 px track, accent filled part, 18 px white thumb with an accent ring. -->
+    <Style x:Key="Toad.Style.SliderThumb" TargetType="Thumb">
+        <Setter Property="Width" Value="18"/>
+        <Setter Property="Height" Value="18"/>
+        <Setter Property="Cursor" Value="Hand"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Thumb">
+                    <Ellipse x:Name="Knob" Fill="White" Stroke="{DynamicResource Toad.Brush.Accent}" StrokeThickness="3"/>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsEnabled" Value="False">
+                            <Setter TargetName="Knob" Property="Stroke" Value="{DynamicResource Toad.Brush.InputBorder}"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style x:Key="Toad.Style.SliderPage" TargetType="RepeatButton">
+        <Setter Property="Focusable" Value="False"/>
+        <Setter Property="IsTabStop" Value="False"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="RepeatButton"><Border Background="Transparent"/></ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style x:Key="Toad.Style.Slider" TargetType="Slider">
+        <Setter Property="MinHeight" Value="22"/>
+        <Setter Property="FocusVisualStyle" Value="{DynamicResource Toad.Style.FocusVisual}"/>
+        <Setter Property="IsMoveToPointEnabled" Value="True"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Slider">
+                    <Grid VerticalAlignment="Center">
+                        <Border x:Name="TrackBar" Height="4" CornerRadius="2" Background="{DynamicResource Toad.Brush.Track}" Margin="9,0"/>
+                        <Border x:Name="Filled" Height="4" CornerRadius="2" Background="{DynamicResource Toad.Brush.Accent}" HorizontalAlignment="Left" Margin="9,0,0,0"
+                                Width="{Binding ActualWidth, ElementName=DecreasePart}"/>
+                        <Track x:Name="PART_Track">
+                            <Track.DecreaseRepeatButton><RepeatButton x:Name="DecreasePart" Style="{StaticResource Toad.Style.SliderPage}" Command="Slider.DecreaseLarge"/></Track.DecreaseRepeatButton>
+                            <Track.IncreaseRepeatButton><RepeatButton Style="{StaticResource Toad.Style.SliderPage}" Command="Slider.IncreaseLarge"/></Track.IncreaseRepeatButton>
+                            <Track.Thumb><Thumb Style="{StaticResource Toad.Style.SliderThumb}"/></Track.Thumb>
+                        </Track>
+                    </Grid>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsEnabled" Value="False">
+                            <Setter TargetName="Filled" Property="Background" Value="{DynamicResource Toad.Brush.InputBorder}"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+        <Style.Triggers>
+            <Trigger Property="Orientation" Value="Vertical">
+                <Setter Property="MinHeight" Value="0"/>
+                <Setter Property="MinWidth" Value="22"/>
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="Slider">
+                            <Grid HorizontalAlignment="Center">
+                                <Border x:Name="TrackBar" Width="4" CornerRadius="2" Background="{DynamicResource Toad.Brush.Track}" Margin="0,9"/>
+                                <Border x:Name="Filled" Width="4" CornerRadius="2" Background="{DynamicResource Toad.Brush.Accent}" VerticalAlignment="Bottom" Margin="0,0,0,9"
+                                        Height="{Binding ActualHeight, ElementName=DecreasePart}"/>
+                                <Track x:Name="PART_Track" IsDirectionReversed="True">
+                                    <Track.DecreaseRepeatButton><RepeatButton x:Name="DecreasePart" Style="{StaticResource Toad.Style.SliderPage}" Command="Slider.DecreaseLarge"/></Track.DecreaseRepeatButton>
+                                    <Track.IncreaseRepeatButton><RepeatButton Style="{StaticResource Toad.Style.SliderPage}" Command="Slider.IncreaseLarge"/></Track.IncreaseRepeatButton>
+                                    <Track.Thumb><Thumb Style="{StaticResource Toad.Style.SliderThumb}"/></Track.Thumb>
+                                </Track>
+                            </Grid>
+                            <ControlTemplate.Triggers>
+                                <Trigger Property="IsEnabled" Value="False">
+                                    <Setter TargetName="Filled" Property="Background" Value="{DynamicResource Toad.Brush.InputBorder}"/>
+                                </Trigger>
+                            </ControlTemplate.Triggers>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+    <Style TargetType="Slider" BasedOn="{StaticResource Toad.Style.Slider}"/>
+
+    <!-- GridSplitter: invisible at rest, a border-coloured line while hovered or dragged. -->
+    <Style x:Key="Toad.Style.GridSplitter" TargetType="GridSplitter">
+        <Setter Property="Background" Value="Transparent"/>
+        <Setter Property="Focusable" Value="False"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="GridSplitter">
+                    <Grid Background="{TemplateBinding Background}">
+                        <Border x:Name="Line" CornerRadius="1" Background="{DynamicResource Toad.Brush.Border}" Opacity="0">
+                            <Border.Margin>
+                                <MultiBinding Converter="{x:Static local:SplitterLineMargin.Instance}">
+                                    <Binding Path="ActualWidth" RelativeSource="{RelativeSource TemplatedParent}"/>
+                                    <Binding Path="ActualHeight" RelativeSource="{RelativeSource TemplatedParent}"/>
+                                </MultiBinding>
+                            </Border.Margin>
+                        </Border>
+                    </Grid>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="Line" Property="Opacity" Value="1"/>
+                        </Trigger>
+                        <Trigger Property="IsDragging" Value="True">
+                            <Setter TargetName="Line" Property="Background" Value="{DynamicResource Toad.Brush.Accent}"/>
+                            <Setter TargetName="Line" Property="Opacity" Value="1"/>
+                        </Trigger>
+                        <Trigger Property="local:Theme.PreviewState" Value="Hover">
+                            <Setter TargetName="Line" Property="Opacity" Value="1"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+    <Style TargetType="GridSplitter" BasedOn="{StaticResource Toad.Style.GridSplitter}"/>
+
+    <!-- Expander: header row with a turning chevron, semibold header text. -->
+    <Style x:Key="Toad.Style.ExpanderHeader" TargetType="ToggleButton">
+        <Setter Property="Cursor" Value="Hand"/>
+        <Setter Property="FocusVisualStyle" Value="{DynamicResource Toad.Style.FocusVisual}"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="ToggleButton">
+                    <Border x:Name="Bd" Background="Transparent" CornerRadius="{DynamicResource Toad.Radius.Item}" Padding="6,6">
+                        <StackPanel Orientation="Horizontal">
+                            <local:Icon x:Name="Chevron" Symbol="ChevronRight" Width="16" Height="16" Margin="0,0,8,0" RenderTransformOrigin="0.5,0.5"
+                                        Foreground="{DynamicResource Toad.Brush.TextDimmed}">
+                                <local:Icon.RenderTransform><RotateTransform Angle="0"/></local:Icon.RenderTransform>
+                            </local:Icon>
+                            <ContentPresenter RecognizesAccessKey="False" VerticalAlignment="Center"/>
+                        </StackPanel>
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsChecked" Value="True">
+                            <Setter TargetName="Chevron" Property="RenderTransform"><Setter.Value><RotateTransform Angle="90"/></Setter.Value></Setter>
+                        </Trigger>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="Bd" Property="Background" Value="{DynamicResource Toad.Brush.Hover}"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style x:Key="Toad.Style.Expander" TargetType="Expander">
+        <Setter Property="FontFamily" Value="{DynamicResource Toad.FontFamily}"/>
+        <Setter Property="FontSize" Value="{DynamicResource Toad.FontSize}"/>
+        <Setter Property="Foreground" Value="{DynamicResource Toad.Brush.Text}"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Expander">
+                    <DockPanel>
+                        <ToggleButton x:Name="Header" DockPanel.Dock="Top" Style="{StaticResource Toad.Style.ExpanderHeader}" FontWeight="SemiBold" Foreground="{TemplateBinding Foreground}"
+                                      Content="{TemplateBinding Header}" ContentTemplate="{TemplateBinding HeaderTemplate}"
+                                      IsChecked="{Binding IsExpanded, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}"/>
+                        <ContentPresenter x:Name="Body" Margin="30,4,0,0" Visibility="Collapsed"/>
+                    </DockPanel>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsExpanded" Value="True">
+                            <Setter TargetName="Body" Property="Visibility" Value="Visible"/>
+                        </Trigger>
+                        <Trigger Property="ExpandDirection" Value="Up">
+                            <Setter TargetName="Header" Property="DockPanel.Dock" Value="Bottom"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+    <Style TargetType="Expander" BasedOn="{StaticResource Toad.Style.Expander}"/>
+
+</ResourceDictionary>

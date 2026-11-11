@@ -1,0 +1,10 @@
+<UserControl x:Class="ToadDesign.Tests.Consumer.ConsumerView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:toad="urn:toaddesign"
+             toad:Theme.IsRoot="True">
+    <StackPanel>
+        <toad:Icon x:Name="Mark" Symbol="Check" StrokeThickness="1.5" Foreground="{DynamicResource Toad.Brush.Accent}"/>
+        <Border x:Name="Card" CornerRadius="{DynamicResource Toad.Radius.Control}" Background="{DynamicResource Toad.Brush.Surface}"/>
+    </StackPanel>
+</UserControl>

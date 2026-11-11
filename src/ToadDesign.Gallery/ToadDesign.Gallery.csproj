@@ -1,0 +1,13 @@
+<Project Sdk="Microsoft.NET.Sdk">
+    <!-- Demo of every control in both themes, and the snapshot mode used to compare with the mockups.
+         Runs without an Application object, like a Revit add-in. -->
+    <PropertyGroup>
+        <IsPackable>false</IsPackable>
+        <OutputType>WinExe</OutputType>
+        <RootNamespace>ToadDesign.Gallery</RootNamespace>
+        <ApplicationManifest>app.manifest</ApplicationManifest>
+    </PropertyGroup>
+    <ItemGroup>
+        <ProjectReference Include="..\ToadDesign\ToadDesign.csproj"/>
+    </ItemGroup>
+</Project>

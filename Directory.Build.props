@@ -1,0 +1,10 @@
+<Project>
+    <PropertyGroup>
+        <TargetFrameworks>net47;net8.0-windows</TargetFrameworks>
+        <UseWPF>true</UseWPF>
+        <LangVersion>latest</LangVersion>
+        <Nullable>enable</Nullable>
+        <ImplicitUsings>disable</ImplicitUsings>
+        <EnableWindowsTargeting>true</EnableWindowsTargeting>
+    </PropertyGroup>
+</Project>

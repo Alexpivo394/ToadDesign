@@ -1,0 +1,29 @@
+<Project>
+    <!-- Merges ToadDesign.dll into the test assembly the way an add-in would, twice: repacked (ToadTools Debug options)
+         and repacked-release (adds /noRepackRes), both plus /copyattrs /allowMultiple. Without those two the
+         XmlnsDefinition of urn:toaddesign is lost and XamlReader cannot resolve toad: types (compiled XAML still works). -->
+    <ItemGroup>
+        <_RepackVariant Include="repacked" Options="/union /illink /parallel /copyattrs /allowMultiple"/>
+        <_RepackVariant Include="repacked-release" Options="/union /illink /parallel /noRepackRes /copyattrs /allowMultiple"/>
+    </ItemGroup>
+
+    <Target Name="RepackChecks" AfterTargets="Build" Condition="'$(TargetFramework)' != ''" Inputs="@(_RepackVariant)" Outputs="%(Identity).skip">
+        <PropertyGroup>
+            <_NetFx>false</_NetFx>
+            <_NetFx Condition="'$(TargetFrameworkIdentifier)' == '.NETFramework'">true</_NetFx>
+            <_Main Condition="$(_NetFx)">$(AssemblyName).exe</_Main>
+            <_Main Condition="!$(_NetFx)">$(AssemblyName).dll</_Main>
+            <_RepackDir>$(OutputPath)%(_RepackVariant.Identity)\</_RepackDir>
+            <_ILRepack>&quot;$(NuGetPackageRoot)ilrepack\2.0.45\tools\ILRepack.exe&quot;</_ILRepack>
+            <_ILRepackLib>@(ReferencePath->'%(RelativeDir)'->Distinct()->'/lib:&quot;%(identity) &quot;', ' ')</_ILRepackLib>
+        </PropertyGroup>
+        <MakeDir Directories="$(_RepackDir)"/>
+        <Exec Command="$(_ILRepack) %(_RepackVariant.Options) /out:&quot;$(_RepackDir)$(_Main)&quot; $(_ILRepackLib) &quot;$(OutputPath)$(_Main)&quot; &quot;$(OutputPath)ToadDesign.dll&quot;"
+              IgnoreStandardErrorWarningFormat="true" StandardOutputImportance="Low"/>
+        <!-- No deps.json: it lists ToadDesign.dll, which no longer exists next to the merged assembly. -->
+        <Copy SourceFiles="$(OutputPath)$(AssemblyName).runtimeconfig.json;$(OutputPath)$(AssemblyName).exe"
+              DestinationFolder="$(_RepackDir)" Condition="!$(_NetFx)"/>
+        <Copy SourceFiles="$(OutputPath)$(AssemblyName).exe.config" DestinationFolder="$(_RepackDir)"
+              Condition="$(_NetFx) AND Exists('$(OutputPath)$(AssemblyName).exe.config')"/>
+    </Target>
+</Project>

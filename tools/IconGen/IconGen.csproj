@@ -1,0 +1,10 @@
+<Project Sdk="Microsoft.NET.Sdk">
+    <!-- Build-time tool: generates src/ToadDesign/Icons/Symbol.g.cs and tabler-outline.bin from @tabler/icons. -->
+    <PropertyGroup>
+        <IsPackable>false</IsPackable>
+        <OutputType>Exe</OutputType>
+        <TargetFrameworks>net10.0</TargetFrameworks>
+        <UseWPF>false</UseWPF>
+        <ImplicitUsings>enable</ImplicitUsings>
+    </PropertyGroup>
+</Project>

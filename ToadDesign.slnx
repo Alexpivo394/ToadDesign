@@ -1,0 +1,12 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/ToadDesign/ToadDesign.csproj" />
+    <Project Path="src/ToadDesign.Gallery/ToadDesign.Gallery.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/ToadDesign.Tests/ToadDesign.Tests.csproj" />
+  </Folder>
+  <Folder Name="/tools/">
+    <Project Path="tools/IconGen/IconGen.csproj" />
+  </Folder>
+</Solution>

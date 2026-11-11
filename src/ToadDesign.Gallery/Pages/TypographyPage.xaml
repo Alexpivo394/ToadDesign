@@ -1,0 +1,17 @@
+<UserControl x:Class="ToadDesign.Gallery.Pages.TypographyPage"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <StackPanel>
+        <TextBlock Text="ПОДПИСЬ КОЛОНКИ — 11, ЗАГЛАВНЫЕ, ПОЛУЖИРНЫЙ" FontSize="{DynamicResource Toad.FontSize.Caption}" FontWeight="Bold"
+                   Foreground="{DynamicResource Toad.Brush.TextDimmed}" Margin="0,8,0,16"/>
+        <TextBlock Text="Заголовок окна — 13, полужирный" FontSize="{DynamicResource Toad.FontSize.Title}" FontWeight="SemiBold" Margin="0,0,0,12"/>
+        <TextBlock Text="Параметры для заполнения — 14, полужирный" FontWeight="SemiBold" Margin="0,0,0,12"/>
+        <TextBlock Text="Основной текст — Segoe UI 14. ADSK_Наименование, ADSK_Код изделия." Margin="0,0,0,12"/>
+        <TextBlock Text="Мелкий приглушённый текст — 12. Отметьте параметры, в которые нужно записать прочерк."
+                   FontSize="{DynamicResource Toad.FontSize.Small}" Foreground="{DynamicResource Toad.Brush.TextDimmed}" Margin="0,0,0,12"/>
+        <TextBlock Text="Лёгкий акцент — текст" Foreground="{DynamicResource Toad.Brush.AccentLightText}" Margin="0,0,0,12"/>
+        <TextBlock Text="Предупреждение" Foreground="{DynamicResource Toad.Brush.Warning}" Margin="0,0,0,12"/>
+        <TextBlock Text="Опасное действие" Foreground="{DynamicResource Toad.Brush.Danger}" Margin="0,0,0,12"/>
+        <TextBlock Text="Сообщение-справка" Foreground="{DynamicResource Toad.Brush.Info}"/>
+    </StackPanel>
+</UserControl>

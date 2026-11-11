@@ -1,0 +1,65 @@
+<UserControl x:Class="ToadDesign.Gallery.Pages.ColorsPage"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <UserControl.Resources>
+        <Style x:Key="Swatch" TargetType="Border">
+            <Setter Property="Width" Value="150"/>
+            <Setter Property="Height" Value="56"/>
+            <Setter Property="Margin" Value="0,0,12,12"/>
+            <Setter Property="CornerRadius" Value="{DynamicResource Toad.Radius.Control}"/>
+            <Setter Property="BorderBrush" Value="{DynamicResource Toad.Brush.Border}"/>
+            <Setter Property="BorderThickness" Value="1"/>
+        </Style>
+        <Style x:Key="Caption" TargetType="TextBlock">
+            <Setter Property="FontSize" Value="{DynamicResource Toad.FontSize.Caption}"/>
+            <Setter Property="FontWeight" Value="Bold"/>
+            <Setter Property="Foreground" Value="{DynamicResource Toad.Brush.TextDimmed}"/>
+            <Setter Property="Margin" Value="0,8,0,10"/>
+        </Style>
+        <Style x:Key="Name" TargetType="TextBlock">
+            <Setter Property="FontSize" Value="{DynamicResource Toad.FontSize.Small}"/>
+            <Setter Property="Margin" Value="10,0"/>
+            <Setter Property="VerticalAlignment" Value="Center"/>
+        </Style>
+    </UserControl.Resources>
+
+    <StackPanel>
+        <TextBlock Text="ПОВЕРХНОСТИ И ТЕКСТ" Style="{StaticResource Caption}"/>
+        <WrapPanel>
+            <Border Style="{StaticResource Swatch}" Background="{DynamicResource Toad.Brush.Background}"><TextBlock Text="Background" Style="{StaticResource Name}"/></Border>
+            <Border Style="{StaticResource Swatch}" Background="{DynamicResource Toad.Brush.Surface}"><TextBlock Text="Surface" Style="{StaticResource Name}"/></Border>
+            <Border Style="{StaticResource Swatch}" Background="{DynamicResource Toad.Brush.Hover}"><TextBlock Text="Hover" Style="{StaticResource Name}"/></Border>
+            <Border Style="{StaticResource Swatch}" Background="{DynamicResource Toad.Brush.Track}"><TextBlock Text="Track" Style="{StaticResource Name}"/></Border>
+            <Border Style="{StaticResource Swatch}" Background="{DynamicResource Toad.Brush.Border}"><TextBlock Text="Border" Style="{StaticResource Name}"/></Border>
+            <Border Style="{StaticResource Swatch}" Background="{DynamicResource Toad.Brush.InputBorder}"><TextBlock Text="InputBorder" Style="{StaticResource Name}"/></Border>
+            <Border Style="{StaticResource Swatch}" Background="{DynamicResource Toad.Brush.Text}"><TextBlock Text="Text" Style="{StaticResource Name}" Foreground="{DynamicResource Toad.Brush.Surface}"/></Border>
+            <Border Style="{StaticResource Swatch}" Background="{DynamicResource Toad.Brush.TextDimmed}"><TextBlock Text="TextDimmed" Style="{StaticResource Name}" Foreground="{DynamicResource Toad.Brush.Surface}"/></Border>
+        </WrapPanel>
+
+        <TextBlock Text="АКЦЕНТ" Style="{StaticResource Caption}"/>
+        <WrapPanel>
+            <Border Style="{StaticResource Swatch}" Background="{DynamicResource Toad.Brush.Accent}"><TextBlock Text="Accent" Style="{StaticResource Name}" Foreground="{DynamicResource Toad.Brush.OnAccent}"/></Border>
+            <Border Style="{StaticResource Swatch}" Background="{DynamicResource Toad.Brush.AccentHover}"><TextBlock Text="AccentHover" Style="{StaticResource Name}" Foreground="{DynamicResource Toad.Brush.OnAccent}"/></Border>
+            <Border Style="{StaticResource Swatch}" Background="{DynamicResource Toad.Brush.AccentLight}"><TextBlock Text="AccentLight" Style="{StaticResource Name}" Foreground="{DynamicResource Toad.Brush.AccentLightText}"/></Border>
+        </WrapPanel>
+        <UniformGrid Rows="1" Columns="10" Height="36" Margin="0,0,0,12" HorizontalAlignment="Left" Width="486">
+            <Border><Border.Background><SolidColorBrush Color="{DynamicResource Toad.Color.Accent.0}"/></Border.Background></Border>
+            <Border><Border.Background><SolidColorBrush Color="{DynamicResource Toad.Color.Accent.1}"/></Border.Background></Border>
+            <Border><Border.Background><SolidColorBrush Color="{DynamicResource Toad.Color.Accent.2}"/></Border.Background></Border>
+            <Border><Border.Background><SolidColorBrush Color="{DynamicResource Toad.Color.Accent.3}"/></Border.Background></Border>
+            <Border><Border.Background><SolidColorBrush Color="{DynamicResource Toad.Color.Accent.4}"/></Border.Background></Border>
+            <Border><Border.Background><SolidColorBrush Color="{DynamicResource Toad.Color.Accent.5}"/></Border.Background></Border>
+            <Border><Border.Background><SolidColorBrush Color="{DynamicResource Toad.Color.Accent.6}"/></Border.Background></Border>
+            <Border><Border.Background><SolidColorBrush Color="{DynamicResource Toad.Color.Accent.7}"/></Border.Background></Border>
+            <Border><Border.Background><SolidColorBrush Color="{DynamicResource Toad.Color.Accent.8}"/></Border.Background></Border>
+            <Border><Border.Background><SolidColorBrush Color="{DynamicResource Toad.Color.Accent.9}"/></Border.Background></Border>
+        </UniformGrid>
+
+        <TextBlock Text="СОСТОЯНИЯ" Style="{StaticResource Caption}"/>
+        <WrapPanel>
+            <Border Style="{StaticResource Swatch}" Background="{DynamicResource Toad.Brush.Info}"><TextBlock Text="Info" Style="{StaticResource Name}" Foreground="{DynamicResource Toad.Brush.Surface}"/></Border>
+            <Border Style="{StaticResource Swatch}" Background="{DynamicResource Toad.Brush.Warning}"><TextBlock Text="Warning" Style="{StaticResource Name}" Foreground="{DynamicResource Toad.Brush.Surface}"/></Border>
+            <Border Style="{StaticResource Swatch}" Background="{DynamicResource Toad.Brush.Danger}"><TextBlock Text="Danger" Style="{StaticResource Name}" Foreground="{DynamicResource Toad.Brush.Surface}"/></Border>
+        </WrapPanel>
+    </StackPanel>
+</UserControl>

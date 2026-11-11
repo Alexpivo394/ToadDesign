@@ -1,0 +1,15 @@
+<Project Sdk="Microsoft.NET.Sdk">
+    <!-- Headless checks: a console runner (each check on a fresh STA thread), also run against ILRepack-merged builds
+         (bin/<cfg>/<tfm>/repacked and repacked-release). Run all with tests/run.sh. -->
+    <PropertyGroup>
+        <IsPackable>false</IsPackable>
+        <OutputType>Exe</OutputType>
+        <RootNamespace>ToadDesign.Tests</RootNamespace>
+    </PropertyGroup>
+    <ItemGroup>
+        <ProjectReference Include="..\..\src\ToadDesign\ToadDesign.csproj"/>
+        <!-- Build-time tool only. -->
+        <PackageReference Include="ILRepack" Version="2.0.45" PrivateAssets="all" ExcludeAssets="runtime;compile"/>
+    </ItemGroup>
+    <Import Project="Repack.targets"/>
+</Project>

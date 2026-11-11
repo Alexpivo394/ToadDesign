@@ -1,0 +1,23 @@
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:sys="clr-namespace:System;assembly=mscorlib">
+
+    <!-- Shared values of every theme root. Colours live in the per-root colour dictionary (Palette.cs). -->
+
+    <FontFamily x:Key="Toad.FontFamily">Segoe UI</FontFamily>
+    <sys:Double x:Key="Toad.FontSize">14</sys:Double>
+    <sys:Double x:Key="Toad.FontSize.Small">12</sys:Double>
+    <sys:Double x:Key="Toad.FontSize.Caption">11</sys:Double>
+    <sys:Double x:Key="Toad.FontSize.Title">13</sys:Double>
+
+    <CornerRadius x:Key="Toad.Radius.Window">10</CornerRadius>
+    <CornerRadius x:Key="Toad.Radius.Control">8</CornerRadius>
+    <CornerRadius x:Key="Toad.Radius.Item">6</CornerRadius>
+    <CornerRadius x:Key="Toad.Radius.Check">5</CornerRadius>
+
+    <sys:Double x:Key="Toad.Size.Control">36</sys:Double>
+    <sys:Double x:Key="Toad.Size.TitleBar">40</sys:Double>
+
+    <Duration x:Key="Toad.Duration.Hover">0:0:0.12</Duration>
+
+</ResourceDictionary>

@@ -1,0 +1,48 @@
+<Project Sdk="Microsoft.NET.Sdk">
+    <PropertyGroup>
+        <RootNamespace>ToadDesign</RootNamespace>
+        <AssemblyName Condition="'$(LabBuild)' != ''">ToadDesign$(LabBuild)</AssemblyName>
+        <GenerateDocumentationFile>true</GenerateDocumentationFile>
+        <PackageId>Alexpivo394.ToadDesign</PackageId>
+        <Version>0.1.0-preview.2</Version>
+        <Authors>Alexpivo394</Authors>
+        <PackageTags>wpf;revit;mantine;theme;controls;dark-mode</PackageTags>
+        <PackageReadmeFile>README.md</PackageReadmeFile>
+        <Description>WPF controls and styles in the ToadFlow (Mantine) look for windows hosted inside other applications, such as Revit add-ins.</Description>
+        <PackageLicenseExpression>MIT</PackageLicenseExpression>
+        <Copyright>Copyright (c) 2026 Alexpivo394</Copyright>
+        <PackageIcon>icon.png</PackageIcon>
+        <RepositoryUrl>https://github.com/Alexpivo394/ToadDesign</RepositoryUrl>
+        <RepositoryType>git</RepositoryType>
+        <PackageProjectUrl>https://github.com/Alexpivo394/ToadDesign</PackageProjectUrl>
+        <!-- Debugging into the package: symbols package and SourceLink (built into the .NET 8+ SDK for GitHub). -->
+        <IncludeSymbols>true</IncludeSymbols>
+        <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+        <PublishRepositoryUrl>true</PublishRepositoryUrl>
+        <EmbedUntrackedSources>true</EmbedUntrackedSources>
+        <Deterministic>true</Deterministic>
+        <ContinuousIntegrationBuild Condition="'$(GITHUB_ACTIONS)' == 'true'">true</ContinuousIntegrationBuild>
+    </PropertyGroup>
+    <ItemGroup>
+        <InternalsVisibleTo Include="ToadDesign.Tests"/>
+        <InternalsVisibleTo Include="ToadDesign.Gallery"/>
+        <EmbeddedResource Include="Icons\tabler-outline.bin" LogicalName="ToadDesign.Icons.tabler-outline.bin" Condition="Exists('Icons\tabler-outline.bin')"/>
+        <None Include="Icons\tabler-icons.LICENSE.txt" Pack="true" PackagePath=""/>
+        <None Include="icon.png" Pack="true" PackagePath=""/>
+        <None Include="..\..\README.md" Pack="true" PackagePath="" Link="README.md"/>
+        <None Include="..\..\LICENSE.md" Pack="true" PackagePath="" Link="LICENSE.md"/>
+    </ItemGroup>
+
+    <!-- The compile-time assembly name as a constant: ILRepack prefixes merged WPF resources with it (lower case). -->
+    <Target Name="GenerateLibraryName" BeforeTargets="CoreCompile">
+        <PropertyGroup>
+            <_LibraryNameFile>$(IntermediateOutputPath)LibraryName.g.cs</_LibraryNameFile>
+        </PropertyGroup>
+        <WriteLinesToFile File="$(_LibraryNameFile)" Overwrite="true" WriteOnlyWhenDifferent="true"
+                          Lines="namespace ToadDesign { internal static class LibraryName { public const string Value = &quot;$(AssemblyName)&quot;%3B } }"/>
+        <ItemGroup>
+            <Compile Include="$(_LibraryNameFile)"/>
+            <FileWrites Include="$(_LibraryNameFile)"/>
+        </ItemGroup>
+    </Target>
+</Project>

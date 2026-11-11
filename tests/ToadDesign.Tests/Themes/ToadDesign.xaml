@@ -1,0 +1,6 @@
+<!-- A consumer dictionary at the library's own path: after ILRepack both live in one g.resources. -->
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:sys="clr-namespace:System;assembly=mscorlib">
+    <sys:String x:Key="Consumer.Marker">consumer</sys:String>
+</ResourceDictionary>

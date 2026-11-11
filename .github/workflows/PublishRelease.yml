@@ -1,0 +1,56 @@
+name: Publish release
+
+# The tag is the version, without a prefix: 0.1.0-preview.2, 0.1.0, ...
+on:
+  push:
+    tags:
+      - '*'
+
+permissions:
+  contents: write
+  id-token: write   # trusted publishing: GitHub issues an OIDC token, nuget.org exchanges it for a short-lived key
+
+jobs:
+  windows:
+    name: windows-2025
+    runs-on: windows-2025
+    steps:
+
+      - name: Checkout
+        uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+
+      - name: Cache packages
+        uses: actions/cache@v5
+        with:
+          path: ~/.nuget/packages
+          key: ${{ runner.os }}-nuget-${{ hashFiles('**/*.csproj', 'Directory.Build.props') }}
+          restore-keys: ${{ runner.os }}-nuget-
+
+      - name: Pack
+        run: dotnet pack src/ToadDesign -c Release -o output -p:Version=${{ github.ref_name }}
+
+      - name: NuGet login
+        id: nuget
+        uses: NuGet/login@v1
+        with:
+          user: Alexpivo394   # nuget.org profile that owns the package
+
+      - name: Publish to NuGet
+        shell: bash
+        run: dotnet nuget push "output/*.nupkg" --api-key "${{ steps.nuget.outputs.NUGET_API_KEY }}" --source https://api.nuget.org/v3/index.json --skip-duplicate
+
+      - name: Publish GitHub release
+        shell: bash
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          prerelease=""
+          case "${{ github.ref_name }}" in *-*) prerelease="--prerelease" ;; esac
+          gh release create "${{ github.ref_name }}" output/* --title "${{ github.ref_name }}" --notes "WPF controls and styles in the ToadFlow look for Revit add-in windows" --target "${{ github.sha }}" $prerelease
+
+      - name: Delete the tag on failure
+        if: failure()
+        shell: bash
+        run: git push origin --delete "${{ github.ref_name }}"

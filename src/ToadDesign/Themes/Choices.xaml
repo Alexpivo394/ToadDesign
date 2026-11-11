@@ -1,0 +1,342 @@
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:local="clr-namespace:ToadDesign">
+
+    <Style x:Key="Toad.Style.ChoiceBase" TargetType="Control">
+        <Setter Property="FontFamily" Value="{DynamicResource Toad.FontFamily}"/>
+        <Setter Property="FontSize" Value="{DynamicResource Toad.FontSize}"/>
+        <Setter Property="Foreground" Value="{DynamicResource Toad.Brush.Text}"/>
+        <Setter Property="Background" Value="Transparent"/>
+        <Setter Property="Cursor" Value="Hand"/>
+        <Setter Property="FocusVisualStyle" Value="{DynamicResource Toad.Style.FocusVisual}"/>
+        <Setter Property="VerticalContentAlignment" Value="Center"/>
+        <Style.Triggers>
+            <Trigger Property="IsEnabled" Value="False">
+                <Setter Property="Foreground" Value="{DynamicResource Toad.Brush.TextDimmed}"/>
+                <Setter Property="Cursor" Value="Arrow"/>
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+
+    <!-- CheckBox: 18 px box, radius 5; accent with a white 12 px check (stroke 3); minus when indeterminate. -->
+    <Style x:Key="Toad.Style.CheckBox" TargetType="CheckBox" BasedOn="{StaticResource Toad.Style.ChoiceBase}">
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="CheckBox">
+                    <Border CornerRadius="{DynamicResource Toad.Radius.Item}" Background="{TemplateBinding Background}" Padding="{TemplateBinding Padding}">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <Grid VerticalAlignment="{TemplateBinding VerticalContentAlignment}">
+                            <Border x:Name="Box" Width="18" Height="18" CornerRadius="{DynamicResource Toad.Radius.Check}" BorderThickness="1"
+                                    Background="{DynamicResource Toad.Brush.Surface}" BorderBrush="{DynamicResource Toad.Brush.InputBorder}" SnapsToDevicePixels="True">
+                                <local:Icon x:Name="Mark" Symbol="Check" Width="12" Height="12" StrokeThickness="3" Visibility="Collapsed"
+                                            Foreground="{DynamicResource Toad.Brush.OnAccent}"/>
+                            </Border>
+                            <Border x:Name="PreviewRing" Margin="-3" CornerRadius="7" BorderThickness="2" BorderBrush="{DynamicResource Toad.Brush.Focus}" Visibility="Collapsed"/>
+                        </Grid>
+                        <ContentPresenter x:Name="Label" Grid.Column="1" Margin="10,0,0,0" RecognizesAccessKey="False" Focusable="False"
+                                          VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
+                    </Grid>
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="Content" Value="{x:Null}">
+                            <Setter TargetName="Label" Property="Margin" Value="0"/>
+                        </Trigger>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="Box" Property="BorderBrush" Value="{DynamicResource Toad.Brush.Accent}"/>
+                        </Trigger>
+                        <Trigger Property="local:Theme.PreviewState" Value="Hover">
+                            <Setter TargetName="Box" Property="BorderBrush" Value="{DynamicResource Toad.Brush.Accent}"/>
+                        </Trigger>
+                        <Trigger Property="local:Theme.PreviewState" Value="Focus">
+                            <Setter TargetName="PreviewRing" Property="Visibility" Value="Visible"/>
+                        </Trigger>
+                        <Trigger Property="IsChecked" Value="True">
+                            <Setter TargetName="Box" Property="Background" Value="{DynamicResource Toad.Brush.Accent}"/>
+                            <Setter TargetName="Box" Property="BorderBrush" Value="{DynamicResource Toad.Brush.Accent}"/>
+                            <Setter TargetName="Mark" Property="Visibility" Value="Visible"/>
+                        </Trigger>
+                        <Trigger Property="IsChecked" Value="{x:Null}">
+                            <Setter TargetName="Box" Property="Background" Value="{DynamicResource Toad.Brush.Accent}"/>
+                            <Setter TargetName="Box" Property="BorderBrush" Value="{DynamicResource Toad.Brush.Accent}"/>
+                            <Setter TargetName="Mark" Property="Visibility" Value="Visible"/>
+                            <Setter TargetName="Mark" Property="Symbol" Value="Minus"/>
+                        </Trigger>
+                        <Trigger Property="IsEnabled" Value="False">
+                            <Setter TargetName="Box" Property="Background" Value="{DynamicResource Toad.Brush.Track}"/>
+                            <Setter TargetName="Box" Property="BorderBrush" Value="{DynamicResource Toad.Brush.InputBorder}"/>
+                            <Setter TargetName="Mark" Property="Foreground" Value="{DynamicResource Toad.Brush.TextDimmed}"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+    <Style TargetType="CheckBox" BasedOn="{StaticResource Toad.Style.CheckBox}"/>
+
+    <!-- A check box as a list row: padding 7×10, radius 6, hover background (mockup .chk rows). -->
+    <Style x:Key="Toad.Style.CheckBoxRow" TargetType="CheckBox" BasedOn="{StaticResource Toad.Style.CheckBox}">
+        <Setter Property="Padding" Value="10,7"/>
+        <Setter Property="HorizontalAlignment" Value="Stretch"/>
+        <Style.Triggers>
+            <Trigger Property="IsMouseOver" Value="True">
+                <Setter Property="Background" Value="{DynamicResource Toad.Brush.Hover}"/>
+            </Trigger>
+            <Trigger Property="local:Theme.PreviewState" Value="Hover">
+                <Setter Property="Background" Value="{DynamicResource Toad.Brush.Hover}"/>
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+
+    <!-- RadioButton: 18 px circle; accent with a white 6 px dot when checked. -->
+    <Style x:Key="Toad.Style.RadioButton" TargetType="RadioButton" BasedOn="{StaticResource Toad.Style.ChoiceBase}">
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="RadioButton">
+                    <Grid Background="{TemplateBinding Background}">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <Grid VerticalAlignment="{TemplateBinding VerticalContentAlignment}">
+                            <Border x:Name="Box" Width="18" Height="18" CornerRadius="9" BorderThickness="1"
+                                    Background="{DynamicResource Toad.Brush.Surface}" BorderBrush="{DynamicResource Toad.Brush.InputBorder}">
+                                <Ellipse x:Name="Dot" Width="6" Height="6" Fill="{DynamicResource Toad.Brush.OnAccent}" Visibility="Collapsed"/>
+                            </Border>
+                            <Border x:Name="PreviewRing" Margin="-3" CornerRadius="12" BorderThickness="2" BorderBrush="{DynamicResource Toad.Brush.Focus}" Visibility="Collapsed"/>
+                        </Grid>
+                        <ContentPresenter x:Name="Label" Grid.Column="1" Margin="10,0,0,0" RecognizesAccessKey="False" Focusable="False"
+                                          VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
+                    </Grid>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="Box" Property="BorderBrush" Value="{DynamicResource Toad.Brush.Accent}"/>
+                        </Trigger>
+                        <Trigger Property="local:Theme.PreviewState" Value="Hover">
+                            <Setter TargetName="Box" Property="BorderBrush" Value="{DynamicResource Toad.Brush.Accent}"/>
+                        </Trigger>
+                        <Trigger Property="local:Theme.PreviewState" Value="Focus">
+                            <Setter TargetName="PreviewRing" Property="Visibility" Value="Visible"/>
+                        </Trigger>
+                        <Trigger Property="IsChecked" Value="True">
+                            <Setter TargetName="Box" Property="Background" Value="{DynamicResource Toad.Brush.Accent}"/>
+                            <Setter TargetName="Box" Property="BorderBrush" Value="{DynamicResource Toad.Brush.Accent}"/>
+                            <Setter TargetName="Dot" Property="Visibility" Value="Visible"/>
+                        </Trigger>
+                        <Trigger Property="IsEnabled" Value="False">
+                            <Setter TargetName="Box" Property="Background" Value="{DynamicResource Toad.Brush.Track}"/>
+                            <Setter TargetName="Dot" Property="Fill" Value="{DynamicResource Toad.Brush.TextDimmed}"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+    <Style TargetType="RadioButton" BasedOn="{StaticResource Toad.Style.RadioButton}"/>
+
+    <!-- toad:Switch: 38×22 track (radius 11), 14 px white thumb 3 px from the edge, slides 16 px in 150 ms. -->
+    <Style x:Key="Toad.Style.Switch" TargetType="local:Switch" BasedOn="{StaticResource Toad.Style.ChoiceBase}">
+        <Setter Property="FontWeight" Value="Normal"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="local:Switch">
+                    <Grid Background="{TemplateBinding Background}">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <Grid VerticalAlignment="{TemplateBinding VerticalContentAlignment}">
+                            <Border x:Name="Track" Width="38" Height="22" CornerRadius="11" BorderThickness="1"
+                                    Background="{DynamicResource Toad.Brush.Track}" BorderBrush="{DynamicResource Toad.Brush.InputBorder}">
+                                <Ellipse x:Name="Thumb" Width="14" Height="14" Fill="White" HorizontalAlignment="Left" Margin="3,0,0,0">
+                                    <Ellipse.Effect>
+                                        <DropShadowEffect BlurRadius="2" ShadowDepth="1" Direction="270" Opacity="0.3"/>
+                                    </Ellipse.Effect>
+                                </Ellipse>
+                            </Border>
+                            <Border x:Name="PreviewRing" Margin="-3" CornerRadius="14" BorderThickness="2" BorderBrush="{DynamicResource Toad.Brush.Focus}" Visibility="Collapsed"/>
+                        </Grid>
+                        <ContentPresenter x:Name="Label" Grid.Column="1" Margin="10,0,0,0" RecognizesAccessKey="False" Focusable="False"
+                                          VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
+                    </Grid>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsChecked" Value="True">
+                            <Setter TargetName="Track" Property="Background" Value="{DynamicResource Toad.Brush.Accent}"/>
+                            <Setter TargetName="Track" Property="BorderBrush" Value="{DynamicResource Toad.Brush.Accent}"/>
+                        </Trigger>
+                        <Trigger Property="local:Theme.PreviewState" Value="Focus">
+                            <Setter TargetName="PreviewRing" Property="Visibility" Value="Visible"/>
+                        </Trigger>
+                        <Trigger Property="IsEnabled" Value="False">
+                            <Setter TargetName="Track" Property="Opacity" Value="0.6"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+    <Style TargetType="local:Switch" BasedOn="{StaticResource Toad.Style.Switch}"/>
+
+    <!-- ComboBox: the field look with a chevron; drop-down card with shadow; items radius 6. -->
+    <Style x:Key="Toad.Style.ComboToggle" TargetType="ToggleButton">
+        <Setter Property="Focusable" Value="False"/>
+        <Setter Property="ClickMode" Value="Press"/>
+        <Setter Property="Cursor" Value="Hand"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="ToggleButton">
+                    <Border Background="Transparent"/>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style x:Key="Toad.Style.ComboEditor" TargetType="TextBox">
+        <Setter Property="Background" Value="Transparent"/>
+        <Setter Property="BorderThickness" Value="0"/>
+        <Setter Property="Foreground" Value="{Binding Foreground, RelativeSource={RelativeSource AncestorType=ComboBox}}"/>
+        <Setter Property="CaretBrush" Value="{DynamicResource Toad.Brush.Text}"/>
+        <Setter Property="SelectionBrush" Value="{DynamicResource Toad.Brush.Accent}"/>
+        <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
+        <Setter Property="VerticalAlignment" Value="Center"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="TextBox">
+                    <ScrollViewer x:Name="PART_ContentHost" Focusable="False" Background="Transparent"
+                                  HorizontalScrollBarVisibility="Hidden" VerticalScrollBarVisibility="Hidden"/>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style x:Key="Toad.Style.ComboBox" TargetType="ComboBox">
+        <Setter Property="FontFamily" Value="{DynamicResource Toad.FontFamily}"/>
+        <Setter Property="FontSize" Value="{DynamicResource Toad.FontSize}"/>
+        <Setter Property="Foreground" Value="{DynamicResource Toad.Brush.Text}"/>
+        <Setter Property="Background" Value="{DynamicResource Toad.Brush.Surface}"/>
+        <Setter Property="BorderBrush" Value="{DynamicResource Toad.Brush.InputBorder}"/>
+        <Setter Property="BorderThickness" Value="1"/>
+        <Setter Property="Padding" Value="12,0"/>
+        <Setter Property="MinHeight" Value="{DynamicResource Toad.Size.Control}"/>
+        <Setter Property="VerticalContentAlignment" Value="Center"/>
+        <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
+        <Setter Property="Validation.ErrorTemplate" Value="{DynamicResource Toad.Template.NoValidationAdorner}"/>
+        <Setter Property="Cursor" Value="Hand"/>
+        <Setter Property="ScrollViewer.HorizontalScrollBarVisibility" Value="Disabled"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="ComboBox">
+                    <Grid>
+                        <Border x:Name="Bd" CornerRadius="{DynamicResource Toad.Radius.Control}" Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" SnapsToDevicePixels="True"/>
+                        <ToggleButton x:Name="Toggle" Style="{StaticResource Toad.Style.ComboToggle}"
+                                      IsChecked="{Binding IsDropDownOpen, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}"/>
+                        <Grid Margin="{TemplateBinding Padding}">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            <ContentPresenter x:Name="Selection" IsHitTestVisible="False" VerticalAlignment="Center" RecognizesAccessKey="False"
+                                              Content="{TemplateBinding SelectionBoxItem}" ContentTemplate="{TemplateBinding SelectionBoxItemTemplate}"
+                                              ContentTemplateSelector="{TemplateBinding ItemTemplateSelector}"/>
+                            <TextBox x:Name="PART_EditableTextBox" Style="{StaticResource Toad.Style.ComboEditor}" Visibility="Collapsed"
+                                     IsReadOnly="{TemplateBinding IsReadOnly}"/>
+                            <local:Icon Grid.Column="1" Symbol="ChevronDown" Width="16" Height="16" Margin="8,0,0,0" IsHitTestVisible="False"
+                                        Foreground="{DynamicResource Toad.Brush.TextDimmed}"/>
+                        </Grid>
+                        <Popup x:Name="PART_Popup" AllowsTransparency="True" Placement="Bottom" Focusable="False" PopupAnimation="Fade"
+                               IsOpen="{TemplateBinding IsDropDownOpen}">
+                            <Grid Margin="0,0,10,16">
+                                <Border Margin="0,4,0,0" CornerRadius="{DynamicResource Toad.Radius.Control}" Background="Black"
+                                        Opacity="{DynamicResource Toad.Shadow.MenuOpacity}">
+                                    <Border.Effect><BlurEffect Radius="16"/></Border.Effect>
+                                    <Border.RenderTransform><TranslateTransform Y="5"/></Border.RenderTransform>
+                                </Border>
+                                <Border x:Name="DropDownBorder" Margin="0,4,0,0" CornerRadius="{DynamicResource Toad.Radius.Control}" Padding="4"
+                                        MinWidth="{Binding ActualWidth, RelativeSource={RelativeSource TemplatedParent}}"
+                                        Background="{DynamicResource Toad.Brush.Surface}" BorderBrush="{DynamicResource Toad.Brush.Border}" BorderThickness="1">
+                                    <ScrollViewer MaxHeight="{TemplateBinding MaxDropDownHeight}" SnapsToDevicePixels="True">
+                                        <ItemsPresenter KeyboardNavigation.DirectionalNavigation="Contained"/>
+                                    </ScrollViewer>
+                                </Border>
+                            </Grid>
+                        </Popup>
+                    </Grid>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsEditable" Value="True">
+                            <Setter TargetName="PART_EditableTextBox" Property="Visibility" Value="Visible"/>
+                            <Setter TargetName="Selection" Property="Visibility" Value="Collapsed"/>
+                            <Setter TargetName="Toggle" Property="Grid.ZIndex" Value="0"/>
+                            <Setter Property="Cursor" Value="IBeam"/>
+                        </Trigger>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="Bd" Property="BorderBrush" Value="{DynamicResource Toad.Brush.Accent}"/>
+                        </Trigger>
+                        <Trigger Property="local:Theme.PreviewState" Value="Hover">
+                            <Setter TargetName="Bd" Property="BorderBrush" Value="{DynamicResource Toad.Brush.Accent}"/>
+                        </Trigger>
+                        <Trigger Property="IsKeyboardFocusWithin" Value="True">
+                            <Setter TargetName="Bd" Property="BorderBrush" Value="{DynamicResource Toad.Brush.Focus}"/>
+                        </Trigger>
+                        <Trigger Property="local:Theme.PreviewState" Value="Focus">
+                            <Setter TargetName="Bd" Property="BorderBrush" Value="{DynamicResource Toad.Brush.Focus}"/>
+                        </Trigger>
+                        <Trigger Property="Validation.HasError" Value="True">
+                            <Setter TargetName="Bd" Property="BorderBrush" Value="{DynamicResource Toad.Brush.Danger}"/>
+                        </Trigger>
+                        <Trigger Property="IsEnabled" Value="False">
+                            <Setter TargetName="Bd" Property="BorderBrush" Value="{DynamicResource Toad.Brush.InputBorder}"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+        <Style.Triggers>
+            <Trigger Property="Validation.HasError" Value="True">
+                <Setter Property="BorderBrush" Value="{DynamicResource Toad.Brush.Danger}"/>
+            </Trigger>
+            <Trigger Property="IsEnabled" Value="False">
+                <Setter Property="Background" Value="{DynamicResource Toad.Brush.Hover}"/>
+                <Setter Property="Foreground" Value="{DynamicResource Toad.Brush.TextDimmed}"/>
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+    <Style TargetType="ComboBox" BasedOn="{StaticResource Toad.Style.ComboBox}"/>
+
+    <!-- Items of drop-downs and lists: radius 6, padding 7×10; hover and selection colours. -->
+    <Style x:Key="Toad.Style.ComboBoxItem" TargetType="ComboBoxItem">
+        <Setter Property="Foreground" Value="{DynamicResource Toad.Brush.Text}"/>
+        <Setter Property="Background" Value="Transparent"/>
+        <Setter Property="Padding" Value="10,7"/>
+        <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
+        <Setter Property="Cursor" Value="Hand"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="ComboBoxItem">
+                    <Border x:Name="Bd" CornerRadius="{DynamicResource Toad.Radius.Item}" Padding="{TemplateBinding Padding}" Background="{TemplateBinding Background}">
+                        <ContentPresenter RecognizesAccessKey="False"/>
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsHighlighted" Value="True">
+                            <Setter TargetName="Bd" Property="Background" Value="{DynamicResource Toad.Brush.Hover}"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+        <Style.Triggers>
+            <Trigger Property="IsSelected" Value="True">
+                <Setter Property="Background" Value="{DynamicResource Toad.Brush.AccentLight}"/>
+                <Setter Property="Foreground" Value="{DynamicResource Toad.Brush.AccentLightText}"/>
+            </Trigger>
+            <Trigger Property="IsEnabled" Value="False">
+                <Setter Property="Foreground" Value="{DynamicResource Toad.Brush.TextDimmed}"/>
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+    <Style TargetType="ComboBoxItem" BasedOn="{StaticResource Toad.Style.ComboBoxItem}"/>
+
+</ResourceDictionary>
