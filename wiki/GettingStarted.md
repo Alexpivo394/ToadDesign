@@ -2,22 +2,11 @@
 
 ## Подключение
 
-Пакет — `Alexpivo394.ToadDesign`.
+Пакет — [`Alexpivo394.ToadDesign`](https://www.nuget.org/packages/Alexpivo394.ToadDesign) на nuget.org.
 
 ```xml
-<PackageReference Include="Alexpivo394.ToadDesign" Version="0.1.0-preview.3" />
+<PackageReference Include="Alexpivo394.ToadDesign" Version="1.0.0" />
 ```
-
-> [!NOTE]
-> Пока пакет раздаётся через локальную ленту NuGet, а не через nuget.org. Добавьте папку ленты в `nuget.config` рядом с решением:
->
-> ```xml
-> <configuration>
->   <packageSources>
->     <add key="local" value="..\_localfeed" />
->   </packageSources>
-> </configuration>
-> ```
 
 Пространство имён XAML — `urn:toaddesign`, принятый префикс — `toad`. В C# — `using ToadDesign;`.
 

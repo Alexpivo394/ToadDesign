@@ -45,4 +45,4 @@ dotnet run --project tools/IconGen -- <путь>/tabler-nodes-outline.json src/T
 
 ## Выпуск
 
-Тег — версия без префикса (`0.1.0`). Workflow `PublishRelease` собирает пакет, публикует его на nuget.org (Trusted Publishing) и создаёт релиз на GitHub.
+Тег — версия без префикса (`1.0.0`). Workflow `PublishRelease` собирает пакет, публикует его на nuget.org (Trusted Publishing) и создаёт релиз на GitHub.

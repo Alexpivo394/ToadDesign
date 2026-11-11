@@ -24,11 +24,10 @@ ToadDesign — оформление WPF в стиле [ToadFlow](https://github.
 ## Установка
 
 ```xml
-<PackageReference Include="Alexpivo394.ToadDesign" Version="0.1.0-preview.3" />
+<PackageReference Include="Alexpivo394.ToadDesign" Version="1.0.0" />
 ```
 
-> [!NOTE]
-> Пакет пока раздаётся через локальную ленту NuGet; на nuget.org он появится после перевода ToadTools.
+Пакет — [`Alexpivo394.ToadDesign`](https://www.nuget.org/packages/Alexpivo394.ToadDesign) на nuget.org.
 
 ## Первое окно
 
