@@ -180,8 +180,65 @@ public class ToadWindow : Window
         var handle = new WindowInteropHelper(this).Handle;
         HwndSource.FromHwnd(handle)?.AddHook(WndProc);
         UpdateChrome();
+        FitToMonitor(handle);
         _shadow = new WindowShadow(handle, (double)GetValue(ShadowOpacityProperty));
     }
+
+    /// <summary>The size no larger than the work area; the minimum is cut to the area too and wins over a smaller request.</summary>
+    /// <param name="requested">Width and height asked for, in device-independent units.</param>
+    /// <param name="minimum">Minimum width and height.</param>
+    /// <param name="workArea">The work area of the monitor, in the same units.</param>
+    /// <returns>The width and height to use.</returns>
+    internal static Size FitToWorkArea(Size requested, Size minimum, Rect workArea)
+    {
+        var width = Math.Min(Math.Max(requested.Width, minimum.Width), workArea.Width);
+        var height = Math.Min(Math.Max(requested.Height, minimum.Height), workArea.Height);
+        return new Size(width, height);
+    }
+
+    // Runs once, from SourceInitialized: the window is not visible yet, so the correction does not show as a jump.
+    private void FitToMonitor(IntPtr handle)
+    {
+        // The monitor the window is going to appear on: that of the owner when centred on it, else its own.
+        var ownerHandle = WindowStartupLocation == WindowStartupLocation.CenterOwner ? new WindowInteropHelper(this).Owner : IntPtr.Zero;
+        var monitorWindow = ownerHandle != IntPtr.Zero ? ownerHandle : handle;
+        if (!NativeMethods.GetMonitor(monitorWindow, out var monitor) || !NativeMethods.GetWindowRect(handle, out var rect)) return;
+
+        // Pixels to device-independent units: the DPI of that monitor in a per-monitor aware process, else the window's own.
+        var perMonitor = NativeMethods.GetPerMonitorDpi(monitorWindow);
+        var toDip = perMonitor != null
+            ? 96 / perMonitor.Value
+            : HwndSource.FromHwnd(handle)?.CompositionTarget?.TransformFromDevice.M11 ?? 1;
+        var work = new Rect(monitor.rcWork.Left * toDip, monitor.rcWork.Top * toDip,
+            (monitor.rcWork.Right - monitor.rcWork.Left) * toDip, (monitor.rcWork.Bottom - monitor.rcWork.Top) * toDip);
+        if (work.Width <= 0 || work.Height <= 0) return;
+
+        // A content-sized dimension ignores Width and Height; cap it so that the content measure respects the area.
+        if (SizeToContent == SizeToContent.Width || SizeToContent == SizeToContent.WidthAndHeight) MaxWidth = Math.Min(MaxWidth, work.Width);
+        if (SizeToContent == SizeToContent.Height || SizeToContent == SizeToContent.WidthAndHeight) MaxHeight = Math.Min(MaxHeight, work.Height);
+
+        var size = new Size(double.IsNaN(Width) ? (rect.Right - rect.Left) * toDip : Width, double.IsNaN(Height) ? (rect.Bottom - rect.Top) * toDip : Height);
+        var fitted = FitToWorkArea(size, new Size(MinWidth, MinHeight), work);
+        var resized = fitted.Width < size.Width || fitted.Height < size.Height;
+        // The minimums first: a minimum above the area would win over the smaller size.
+        if (fitted.Width < MinWidth) MinWidth = fitted.Width;
+        if (fitted.Height < MinHeight) MinHeight = fitted.Height;
+        if (!double.IsNaN(Width) && fitted.Width < Width) Width = fitted.Width;
+        if (!double.IsNaN(Height) && fitted.Height < Height) Height = fitted.Height;
+
+        // Centre a window that had to shrink; move one that still sticks out of the area back into it.
+        var left = rect.Left * toDip;
+        var top = rect.Top * toDip;
+        var sticksOut = left < work.Left || top < work.Top || left + fitted.Width > work.Right || top + fitted.Height > work.Bottom;
+        if (!resized && !sticksOut) return;
+        var target = resized
+            ? new Point(work.Left + (work.Width - fitted.Width) / 2, work.Top + (work.Height - fitted.Height) / 2)
+            : new Point(Math.Max(work.Left, Math.Min(left, work.Right - fitted.Width)), Math.Max(work.Top, Math.Min(top, work.Bottom - fitted.Height)));
+        // Moved in pixels on the handle: Left and Top would be converted with the DPI of the window's current monitor.
+        NativeMethods.SetWindowPos(handle, IntPtr.Zero, (int)Math.Round(target.X / toDip), (int)Math.Round(target.Y / toDip), 0, 0, SWP_NOSIZE | SWP_NOZORDER | SWP_NOACTIVATE);
+    }
+
+    private const uint SWP_NOSIZE = 0x0001, SWP_NOZORDER = 0x0004, SWP_NOACTIVATE = 0x0010;
 
     /// <inheritdoc/>
     protected override void OnStateChanged(EventArgs e)

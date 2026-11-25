@@ -54,6 +54,31 @@ internal static class NativeMethods
     [DllImport("dwmapi.dll")]
     public static extern int DwmSetWindowAttribute(IntPtr hwnd, int attribute, ref int value, int size);
 
+    [DllImport("shcore.dll")]
+    private static extern int GetDpiForMonitor(IntPtr monitor, int type, out uint dpiX, out uint dpiY);
+
+    [DllImport("shcore.dll")]
+    private static extern int GetProcessDpiAwareness(IntPtr process, out int awareness);
+
+    /// <summary>
+    /// The effective DPI of the monitor under the window, only when the process is per-monitor DPI aware: only then
+    /// WPF units on that monitor follow it. Null for other processes and on Windows without shcore (before 8.1).
+    /// </summary>
+    public static double? GetPerMonitorDpi(IntPtr hwnd)
+    {
+        try
+        {
+            const int perMonitorAware = 2;
+            if (GetProcessDpiAwareness(IntPtr.Zero, out var awareness) != 0 || awareness != perMonitorAware) return null;
+            var monitor = MonitorFromWindow(hwnd, 2);
+            return monitor != IntPtr.Zero && GetDpiForMonitor(monitor, 0 /*MDT_EFFECTIVE_DPI*/, out var dpi, out _) == 0 && dpi > 0 ? dpi : null;
+        }
+        catch (Exception e) when (e is DllNotFoundException || e is EntryPointNotFoundException)
+        {
+            return null;
+        }
+    }
+
     public static bool GetMonitor(IntPtr hwnd, out MONITORINFO info)
     {
         info = new MONITORINFO { cbSize = Marshal.SizeOf(typeof(MONITORINFO)) };
