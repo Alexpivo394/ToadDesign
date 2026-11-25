@@ -14,7 +14,7 @@
         <Setter Property="Background" Value="{DynamicResource Toad.Brush.Surface}"/>
         <Setter Property="BorderBrush" Value="{DynamicResource Toad.Brush.Border}"/>
         <Setter Property="BorderThickness" Value="1"/>
-        <Setter Property="Padding" Value="16,14"/>
+        <Setter Property="Padding" Value="{DynamicResource Toad.Padding.Card}"/>
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="local:Card">
@@ -75,7 +75,7 @@
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="ToggleButton">
-                    <Border Background="Transparent" Padding="16,14">
+                    <Border Background="Transparent" Padding="{DynamicResource Toad.Padding.CardHeader}">
                         <ContentPresenter RecognizesAccessKey="False"/>
                     </Border>
                 </ControlTemplate>
@@ -90,7 +90,7 @@
         <Setter Property="Background" Value="{DynamicResource Toad.Brush.Surface}"/>
         <Setter Property="BorderBrush" Value="{DynamicResource Toad.Brush.Border}"/>
         <Setter Property="BorderThickness" Value="1"/>
-        <Setter Property="Padding" Value="16,0,16,14"/>
+        <Setter Property="Padding" Value="{DynamicResource Toad.Padding.CardBody}"/>
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="local:CardExpander">
@@ -176,7 +176,7 @@
         <Setter Property="Foreground" Value="{DynamicResource Toad.Brush.Text}"/>
         <Setter Property="Background" Value="{DynamicResource Toad.Brush.InfoLight}"/>
         <Setter Property="BorderBrush" Value="{DynamicResource Toad.Brush.Info}"/>
-        <Setter Property="Padding" Value="14,12"/>
+        <Setter Property="Padding" Value="{DynamicResource Toad.Padding.Alert}"/>
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="local:Alert">

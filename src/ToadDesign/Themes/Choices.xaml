@@ -79,7 +79,7 @@
 
     <!-- A check box as a list row: padding 7×10, radius 6, hover background (mockup .chk rows). -->
     <Style x:Key="Toad.Style.CheckBoxRow" TargetType="CheckBox" BasedOn="{StaticResource Toad.Style.CheckBox}">
-        <Setter Property="Padding" Value="10,7"/>
+        <Setter Property="Padding" Value="{DynamicResource Toad.Padding.Item}"/>
         <Setter Property="HorizontalAlignment" Value="Stretch"/>
         <Style.Triggers>
             <Trigger Property="IsMouseOver" Value="True">
@@ -219,7 +219,7 @@
         <Setter Property="Background" Value="{DynamicResource Toad.Brush.Surface}"/>
         <Setter Property="BorderBrush" Value="{DynamicResource Toad.Brush.InputBorder}"/>
         <Setter Property="BorderThickness" Value="1"/>
-        <Setter Property="Padding" Value="12,0"/>
+        <Setter Property="Padding" Value="{DynamicResource Toad.Padding.Field}"/>
         <Setter Property="MinHeight" Value="{DynamicResource Toad.Size.Control}"/>
         <Setter Property="VerticalContentAlignment" Value="Center"/>
         <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
@@ -310,7 +310,7 @@
     <Style x:Key="Toad.Style.ComboBoxItem" TargetType="ComboBoxItem">
         <Setter Property="Foreground" Value="{DynamicResource Toad.Brush.Text}"/>
         <Setter Property="Background" Value="Transparent"/>
-        <Setter Property="Padding" Value="10,7"/>
+        <Setter Property="Padding" Value="{DynamicResource Toad.Padding.Item}"/>
         <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
         <Setter Property="Cursor" Value="Hand"/>
         <Setter Property="Template">

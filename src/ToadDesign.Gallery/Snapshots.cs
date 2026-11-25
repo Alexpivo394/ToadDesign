@@ -18,10 +18,25 @@ internal static class Snapshots
 
     public static void RenderAll(string dir)
     {
+        try
+        {
+            foreach (var density in new[] { ToadDensity.Normal, ToadDensity.Compact })
+                RenderAll(dir, density);
+        }
+        finally
+        {
+            ToadTheme.Density = ToadDensity.Normal;
+        }
+    }
+
+    // Normal files keep their names; the compact ones get a "-compact" suffix.
+    private static void RenderAll(string dir, ToadDensity density)
+    {
+        ToadTheme.Density = density;
         foreach (var mode in new[] { ToadThemeMode.Light, ToadThemeMode.Dark })
         {
             ToadTheme.Mode = mode;
-            var suffix = mode.ToString().ToLowerInvariant();
+            var suffix = mode.ToString().ToLowerInvariant() + (density == ToadDensity.Compact ? "-compact" : "");
             foreach (var page in PageList.All)
                 Save(RenderPage(page.Create()), Path.Combine(dir, $"page-{page.Key}-{suffix}.png"));
             Save(RenderWindow(SampleWindows.Mockup01(), mode == ToadThemeMode.Dark), Path.Combine(dir, $"window-mockup01-{suffix}.png"));

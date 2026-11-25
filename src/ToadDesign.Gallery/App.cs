@@ -68,7 +68,21 @@ internal static class GalleryWindow
             ToadTheme.Mode = ToadTheme.ActualMode == ToadThemeMode.Dark ? ToadThemeMode.Light : ToadThemeMode.Dark;
             themeIcon.Symbol = ToadTheme.Mode == ToadThemeMode.Dark ? Symbol.Sun : Symbol.Moon;
         };
-        window.TitleBarContent = themeToggle;
+
+        // Density switch next to the theme one; the icon shows what a click leads to.
+        var densityToggle = new Border { Width = 34, Height = 30, CornerRadius = new CornerRadius(8), Cursor = Cursors.Hand, Margin = new Thickness(0, 0, 6, 0), Background = System.Windows.Media.Brushes.Transparent };
+        var densityIcon = new Icon { Symbol = Symbol.ArrowsMinimize, HorizontalAlignment = HorizontalAlignment.Center, VerticalAlignment = VerticalAlignment.Center };
+        densityIcon.SetResourceReference(Icon.ForegroundProperty, "Toad.Brush.TextDimmed");
+        densityToggle.Child = densityIcon;
+        densityToggle.ToolTip = "Compact";
+        densityToggle.MouseEnter += (_, _) => densityToggle.SetResourceReference(Border.BackgroundProperty, "Toad.Brush.Hover");
+        densityToggle.MouseLeave += (_, _) => densityToggle.Background = System.Windows.Media.Brushes.Transparent;
+        densityToggle.MouseLeftButtonUp += (_, _) =>
+        {
+            ToadTheme.Density = ToadTheme.Density == ToadDensity.Compact ? ToadDensity.Normal : ToadDensity.Compact;
+            densityIcon.Symbol = ToadTheme.Density == ToadDensity.Compact ? Symbol.ArrowsMaximize : Symbol.ArrowsMinimize;
+        };
+        window.TitleBarContent = new StackPanel { Orientation = Orientation.Horizontal, Children = { densityToggle, themeToggle } };
 
         var content = new ContentControl();
         var card = new Border { Margin = new Thickness(0, 4, 16, 16), Padding = new Thickness(24), BorderThickness = new Thickness(1) };

@@ -14,7 +14,7 @@
         <Setter Property="Background" Value="{DynamicResource Toad.Brush.Surface}"/>
         <Setter Property="BorderBrush" Value="{DynamicResource Toad.Brush.InputBorder}"/>
         <Setter Property="BorderThickness" Value="1"/>
-        <Setter Property="Padding" Value="12,0"/>
+        <Setter Property="Padding" Value="{DynamicResource Toad.Padding.Field}"/>
         <Setter Property="MinHeight" Value="{DynamicResource Toad.Size.Control}"/>
         <Setter Property="VerticalContentAlignment" Value="Center"/>
         <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
@@ -31,7 +31,7 @@
     </Style>
 
     <!-- Border states shared by every field template: focus (accent), error (danger) wins. -->
-    <!-- WPF applies TextBox and PasswordBox Padding inside the text view as well; their 12 px inset is in the templates. -->
+    <!-- WPF applies TextBox and PasswordBox Padding inside the text view as well; their inset (Toad.Padding.Field) is in the templates. -->
     <Style x:Key="Toad.Style.TextBoxBase" TargetType="TextBoxBase" BasedOn="{StaticResource Toad.Style.FieldBase}">
         <Setter Property="Padding" Value="0"/>
         <Setter Property="CaretBrush" Value="{DynamicResource Toad.Brush.Text}"/>
@@ -45,7 +45,7 @@
                 <ControlTemplate TargetType="TextBox">
                     <Border x:Name="Bd" CornerRadius="{DynamicResource Toad.Radius.Control}" Background="{TemplateBinding Background}"
                             BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" SnapsToDevicePixels="True">
-                        <ScrollViewer x:Name="PART_ContentHost" Margin="12,0" Focusable="False"
+                        <ScrollViewer x:Name="PART_ContentHost" Margin="{DynamicResource Toad.Padding.Field}" Focusable="False"
                                       VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
                                       HorizontalScrollBarVisibility="Hidden" VerticalScrollBarVisibility="Hidden"/>
                     </Border>
@@ -77,7 +77,7 @@
                 <ControlTemplate TargetType="local:TextBox">
                     <Border x:Name="Bd" CornerRadius="{DynamicResource Toad.Radius.Control}" Background="{TemplateBinding Background}"
                             BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" SnapsToDevicePixels="True">
-                        <Grid Margin="12,0">
+                        <Grid Margin="{DynamicResource Toad.Padding.Field}">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="Auto"/>
                                 <ColumnDefinition Width="*"/>
@@ -127,7 +127,7 @@
                 <ControlTemplate TargetType="PasswordBox">
                     <Border x:Name="Bd" CornerRadius="{DynamicResource Toad.Radius.Control}" Background="{TemplateBinding Background}"
                             BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" SnapsToDevicePixels="True">
-                        <ScrollViewer x:Name="PART_ContentHost" Margin="12,0" Focusable="False"
+                        <ScrollViewer x:Name="PART_ContentHost" Margin="{DynamicResource Toad.Padding.Field}" Focusable="False"
                                       VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
                     </Border>
                     <ControlTemplate.Triggers>

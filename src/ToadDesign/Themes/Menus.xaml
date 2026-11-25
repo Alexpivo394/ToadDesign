@@ -50,7 +50,7 @@
     <Style x:Key="Toad.Style.MenuItem" TargetType="MenuItem">
         <Setter Property="Foreground" Value="{DynamicResource Toad.Brush.Text}"/>
         <Setter Property="Background" Value="Transparent"/>
-        <Setter Property="Padding" Value="10,7"/>
+        <Setter Property="Padding" Value="{DynamicResource Toad.Padding.Item}"/>
         <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
         <Setter Property="Template">
             <Setter.Value>
@@ -156,7 +156,7 @@
         <Setter Property="FontSize" Value="{DynamicResource Toad.FontSize.Small}"/>
         <Setter Property="Foreground" Value="{DynamicResource Toad.Brush.Surface}"/>
         <Setter Property="Background" Value="{DynamicResource Toad.Brush.Text}"/>
-        <Setter Property="Padding" Value="10,5"/>
+        <Setter Property="Padding" Value="{DynamicResource Toad.Padding.Tip}"/>
         <Setter Property="HasDropShadow" Value="False"/>
         <Setter Property="Template">
             <Setter.Value>

@@ -88,7 +88,8 @@ internal static class SampleWindows02
     private static ToadDesign.ToadWindow Window(string title, Symbol icon, double width, double height)
     {
         var w = new ToadDesign.ToadWindow { Title = title, TitleIcon = icon, Width = width, Height = height, Fill = WindowFill.Background };
-        w.Resources["Toad.Size.Control"] = 34.0; // dense window, as in the mockup
+        // Dense window, as in the mockup. In the compact density the theme's own 28 already is the dense size.
+        if (ToadTheme.Density == ToadDensity.Normal) w.Resources["Toad.Size.Control"] = 34.0;
         return w;
     }
 

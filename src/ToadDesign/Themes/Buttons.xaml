@@ -61,7 +61,7 @@
         <Setter Property="Background" Value="{DynamicResource Toad.Brush.Surface}"/>
         <Setter Property="BorderBrush" Value="{DynamicResource Toad.Brush.InputBorder}"/>
         <Setter Property="BorderThickness" Value="1"/>
-        <Setter Property="Padding" Value="16,0"/>
+        <Setter Property="Padding" Value="{DynamicResource Toad.Padding.Button}"/>
         <Setter Property="MinHeight" Value="{DynamicResource Toad.Size.Control}"/>
         <Setter Property="HorizontalContentAlignment" Value="Center"/>
         <Setter Property="VerticalContentAlignment" Value="Center"/>

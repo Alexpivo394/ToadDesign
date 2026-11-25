@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using static ToadDesign.Tests.Sta;
@@ -50,13 +51,22 @@ public static class DensityChecks
             root = new Border();
             Theme.SetIsRoot(root, true);
         });
-        Equal(14.0, dispatcher.Invoke(() => (double)root!.FindResource("Toad.FontSize")), "initial");
-        ToadTheme.Density = ToadDensity.Compact;
-        WaitUntil(() => dispatcher.Invoke(() => (double)root!.FindResource("Toad.FontSize")) == 12.0, "root compact");
-        Equal(28.0, dispatcher.Invoke(() => (double)root!.FindResource("Toad.Size.Control")), "compact control");
-        Reset();
-        WaitUntil(() => dispatcher.Invoke(() => (double)root!.FindResource("Toad.FontSize")) == 14.0, "root back to normal");
-        dispatcher.InvokeShutdown();
+        try
+        {
+            Equal(14.0, dispatcher.Invoke(() => (double)root!.FindResource("Toad.FontSize")), "initial");
+            ToadTheme.Density = ToadDensity.Compact;
+            WaitUntil(() => dispatcher.Invoke(() => (double)root!.FindResource("Toad.FontSize")) == 12.0, "root compact");
+            Equal(28.0, dispatcher.Invoke(() => (double)root!.FindResource("Toad.Size.Control")), "compact control");
+            Equal(new Thickness(10, 0, 10, 0), dispatcher.Invoke(() => (Thickness)root!.FindResource("Toad.Padding.Button")), "compact button padding");
+            Reset();
+            WaitUntil(() => dispatcher.Invoke(() => (double)root!.FindResource("Toad.FontSize")) == 14.0, "root back to normal");
+            Equal(new Thickness(16, 0, 16, 0), dispatcher.Invoke(() => (Thickness)root!.FindResource("Toad.Padding.Button")), "normal button padding");
+        }
+        finally
+        {
+            Reset();
+            dispatcher.InvokeShutdown();
+        }
     }
 
     public static void Density_Change_KeepsColors()
@@ -68,11 +78,44 @@ public static class DensityChecks
             root = new Border();
             Theme.SetIsRoot(root, true);
         });
-        ToadTheme.Density = ToadDensity.Compact;
-        WaitUntil(() => dispatcher.Invoke(() => (double)root!.FindResource("Toad.FontSize")) == 12.0, "root compact");
-        True(dispatcher.Invoke(() => root!.FindResource("Toad.Brush.Text")) != null, "text brush present");
-        Reset();
-        dispatcher.InvokeShutdown();
+        try
+        {
+            ToadTheme.Density = ToadDensity.Compact;
+            WaitUntil(() => dispatcher.Invoke(() => (double)root!.FindResource("Toad.FontSize")) == 12.0, "root compact");
+            True(dispatcher.Invoke(() => root!.FindResource("Toad.Brush.Text")) != null, "text brush present");
+        }
+        finally
+        {
+            Reset();
+            dispatcher.InvokeShutdown();
+        }
+    }
+
+    public static void Metrics_EveryKey_InBothDensities()
+    {
+        var normal = Metrics.Create(false);
+        var compact = Metrics.Create(true);
+        var normalKeys = normal.Keys.Cast<string>().OrderBy(k => k).ToArray();
+        var compactKeys = compact.Keys.Cast<string>().OrderBy(k => k).ToArray();
+        Equal(string.Join(",", normalKeys), string.Join(",", compactKeys), "key sets");
+        True(normalKeys.Contains("Toad.Padding.Button") && normalKeys.Contains("Toad.Padding.Field")
+            && normalKeys.Contains("Toad.Padding.Item") && normalKeys.Contains("Toad.Padding.Tab")
+            && normalKeys.Contains("Toad.Padding.Cell") && normalKeys.Contains("Toad.Padding.Header"), "required padding keys");
+        foreach (var key in normalKeys)
+            Equal(normal[key]!.GetType(), compact[key]!.GetType(), "value type of " + key);
+    }
+
+    public static void Metrics_Paddings_CompactIsTighter()
+    {
+        var normal = Metrics.Create(false);
+        var compact = Metrics.Create(true);
+        foreach (var key in normal.Keys.Cast<string>().Where(k => k.StartsWith("Toad.Padding.")))
+        {
+            var n = (Thickness)normal[key]!;
+            var c = (Thickness)compact[key]!;
+            True(c.Left <= n.Left && c.Top <= n.Top && c.Right <= n.Right && c.Bottom <= n.Bottom, key + " is not larger when compact");
+            True(c != n, key + " differs when compact");
+        }
     }
 
     public static void Density_NewRoot_StartsWithCurrentDensity()
