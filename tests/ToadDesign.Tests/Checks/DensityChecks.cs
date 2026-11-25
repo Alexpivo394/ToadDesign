@@ -99,7 +99,7 @@ public static class DensityChecks
         var compactKeys = compact.Keys.Cast<string>().OrderBy(k => k).ToArray();
         Equal(string.Join(",", normalKeys), string.Join(",", compactKeys), "key sets");
         True(normalKeys.Contains("Toad.Padding.Button") && normalKeys.Contains("Toad.Padding.Field")
-            && normalKeys.Contains("Toad.Padding.Item") && normalKeys.Contains("Toad.Padding.Tab")
+            && normalKeys.Contains("Toad.Padding.Item")
             && normalKeys.Contains("Toad.Padding.Cell") && normalKeys.Contains("Toad.Padding.Header"), "required padding keys");
         foreach (var key in normalKeys)
             Equal(normal[key]!.GetType(), compact[key]!.GetType(), "value type of " + key);

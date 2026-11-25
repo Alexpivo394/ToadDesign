@@ -23,7 +23,6 @@ internal static class Metrics
         ("Toad.Padding.Button", new Thickness(16, 0, 16, 0), new Thickness(10, 0, 10, 0)),
         ("Toad.Padding.Field", new Thickness(12, 0, 12, 0), new Thickness(8, 0, 8, 0)),
         ("Toad.Padding.Item", new Thickness(10, 7, 10, 7), new Thickness(7, 5, 7, 5)),
-        ("Toad.Padding.Tab", new Thickness(14, 8, 14, 8), new Thickness(10, 6, 10, 6)),
         ("Toad.Padding.Cell", new Thickness(14, 0, 14, 0), new Thickness(10, 0, 10, 0)),
         ("Toad.Padding.Header", new Thickness(14, 8, 14, 8), new Thickness(10, 6, 10, 6)),
         ("Toad.Padding.Row", new Thickness(4, 6, 4, 6), new Thickness(3, 5, 3, 5)),

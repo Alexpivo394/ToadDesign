@@ -92,7 +92,6 @@ ToadTheme.Density = ToadDensity.Compact;   // Normal (по умолчанию) �
 | `Toad.Padding.Button` | 16,0 | 10,0 |
 | `Toad.Padding.Field` | 12,0 | 8,0 |
 | `Toad.Padding.Item` | 10,7 | 7,5 |
-| `Toad.Padding.Tab` | 14,8 | 10,6 |
 | `Toad.Padding.Cell` | 14,0 | 10,0 |
 | `Toad.Padding.Header` | 14,8 | 10,6 |
 | `Toad.Padding.Row` | 4,6 | 3,5 |
