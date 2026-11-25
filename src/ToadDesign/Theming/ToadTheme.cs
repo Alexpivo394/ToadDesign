@@ -15,6 +15,7 @@ public static class ToadTheme
     private static volatile ToadThemeMode _mode = ToadThemeMode.Light;
     private static volatile AccentScale _accent = AccentScale.Green;
     private static volatile bool _systemDark;
+    private static volatile ToadDensity _density = ToadDensity.Normal;
 
     /// <summary>The selected mode. Setting it repaints every live root on its own thread.</summary>
     public static ToadThemeMode Mode
@@ -51,6 +52,17 @@ public static class ToadTheme
         }
     }
 
+    /// <summary>The density of sizes; <see cref="ToadDensity.Normal"/> by default. Setting it resizes every live root.</summary>
+    public static ToadDensity Density
+    {
+        get => _density;
+        set
+        {
+            _density = value;
+            Broadcast();
+        }
+    }
+
     internal static void OnSystemThemeChanged(bool dark)
     {
         if (_systemDark == dark) return;
@@ -74,7 +86,7 @@ public static class ToadTheme
         {
             var r = root;
             // The update reads the state current at delivery time, so concurrent changes converge on the last one.
-            r.Dispatcher.BeginInvoke(new Action(() => Theme.ApplyColors(r)));
+            r.Dispatcher.BeginInvoke(new Action(() => Theme.Apply(r)));
         }
     }
 

@@ -1,3 +1,5 @@
+using System;
+using System.Collections.ObjectModel;
 using System.Windows;
 
 namespace ToadDesign;
@@ -27,6 +29,10 @@ public static class Theme
     private static readonly DependencyProperty ColorsProperty = DependencyProperty.RegisterAttached(
         "Colors", typeof(ResourceDictionary), typeof(Theme));
 
+    // Marks the size dictionary of a root so that it can be found and replaced.
+    private static readonly DependencyProperty MetricsProperty = DependencyProperty.RegisterAttached(
+        "Metrics", typeof(ResourceDictionary), typeof(Theme));
+
     /// <summary>Gets whether <paramref name="element"/> is a theme root.</summary>
     public static bool GetIsRoot(DependencyObject element) => (bool)element.GetValue(IsRootProperty);
 
@@ -38,11 +44,11 @@ public static class Theme
         if (d is not FrameworkElement root || !(bool)e.NewValue || root.GetValue(ColorsProperty) != null) return;
         // Register before reading the theme: a change made on another thread after this point reaches the root.
         ToadTheme.Register(root);
-        ApplyColors(root);
+        Apply(root);
         var shared = new ResourceDictionary { Source = ComponentResources.Xaml("themes/toaddesign.xaml") };
         foreach (var part in Parts) shared.MergedDictionaries.Add(new ResourceDictionary { Source = ComponentResources.Xaml(part) });
         root.SetValue(SharedProperty, shared);
-        root.Resources.MergedDictionaries.Insert(1, shared);
+        root.Resources.MergedDictionaries.Insert(2, shared);
 
         // XAML that declares an explicit <ResourceDictionary> (or code that assigns Resources) replaces the dictionary
         // the theme was merged into: merge it again after parsing and whenever the root is loaded.
@@ -55,7 +61,8 @@ public static class Theme
     {
         var merged = root.Resources.MergedDictionaries;
         if (root.GetValue(SharedProperty) is ResourceDictionary shared && !merged.Contains(shared)) merged.Insert(0, shared);
-        if (root.GetValue(ColorsProperty) is not ResourceDictionary colors || !merged.Contains(colors)) ApplyColors(root);
+        if (root.GetValue(ColorsProperty) is not ResourceDictionary colors || !merged.Contains(colors)
+            || root.GetValue(MetricsProperty) is not ResourceDictionary metrics || !merged.Contains(metrics)) Apply(root);
     }
 
     /// <summary>Identifies the Tone attached property (also <see cref="Button.Tone"/> and <see cref="Badge.Tone"/>).</summary>
@@ -77,15 +84,22 @@ public static class Theme
     /// </summary>
     public static void SetPreviewState(DependencyObject element, PreviewState value) => element.SetValue(PreviewStateProperty, value);
 
-    /// <summary>Replaces the root's colour dictionary with one for the current mode and accent.</summary>
-    internal static void ApplyColors(FrameworkElement root)
+    /// <summary>Replaces the root's colour and size dictionaries with ones for the current mode, accent and density.</summary>
+    internal static void Apply(FrameworkElement root)
     {
         var colors = Palette.Create(ToadTheme.ActualMode == ToadThemeMode.Dark, ToadTheme.Accent);
+        var metrics = Metrics.Create(ToadTheme.Density == ToadDensity.Compact);
         var merged = root.Resources.MergedDictionaries;
-        if (root.GetValue(ColorsProperty) is ResourceDictionary old && merged.IndexOf(old) is var index and >= 0)
-            merged[index] = colors;
+        Replace(root, merged, ColorsProperty, colors, 0);
+        Replace(root, merged, MetricsProperty, metrics, 1);
+    }
+
+    private static void Replace(FrameworkElement root, Collection<ResourceDictionary> merged, DependencyProperty marker, ResourceDictionary fresh, int position)
+    {
+        if (root.GetValue(marker) is ResourceDictionary old && merged.IndexOf(old) is var index and >= 0)
+            merged[index] = fresh;
         else
-            merged.Insert(0, colors);
-        root.SetValue(ColorsProperty, colors);
+            merged.Insert(Math.Min(position, merged.Count), fresh);
+        root.SetValue(marker, fresh);
     }
 }
