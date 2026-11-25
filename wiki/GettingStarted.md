@@ -5,7 +5,7 @@
 Пакет — [`Alexpivo394.ToadDesign`](https://www.nuget.org/packages/Alexpivo394.ToadDesign) на nuget.org.
 
 ```xml
-<PackageReference Include="Alexpivo394.ToadDesign" Version="1.0.0" />
+<PackageReference Include="Alexpivo394.ToadDesign" Version="1.1.0" />
 ```
 
 Пространство имён XAML — `urn:toaddesign`, принятый префикс — `toad`. В C# — `using ToadDesign;`.
