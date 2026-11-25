@@ -63,7 +63,7 @@ public static class WorkAreaChecks
         w.Close();
     }
 
-    public static void Window_ManualOffTheEdge_IsMovedBack()
+    public static void Window_FittingOnTheEdge_IsNotMoved()
     {
         ToadTheme.Mode = ToadThemeMode.Light;
         var w = new ToadWindow { Title = "Edge", Width = 800, Height = 500, Left = 3, Top = 3, WindowStartupLocation = WindowStartupLocation.Manual, ShowActivated = false };
@@ -71,13 +71,41 @@ public static class WorkAreaChecks
         DoEvents();
         var area = WorkAreaOf(w, out var toDip);
         w.Close();
-        // Pushed far beyond the right and bottom edges, the window comes back into the area with its size kept.
-        var moved = new ToadWindow { Title = "Edge", Width = 800, Height = 500, Left = area.Right - 100, Top = area.Bottom - 100, WindowStartupLocation = WindowStartupLocation.Manual, ShowActivated = false };
-        moved.Show();
+        // A window that fits but straddles the edge is neither resized nor moved.
+        var edge = new ToadWindow { Title = "Edge", Width = 800, Height = 500, Left = area.Right - 100, Top = area.Bottom - 100, WindowStartupLocation = WindowStartupLocation.Manual, ShowActivated = false };
+        edge.Show();
         DoEvents();
-        Inside(area, BoundsOnScreen(moved, toDip), "moved window");
-        Equal(800.0, moved.Width, "size kept");
-        moved.Close();
+        Equal(800.0, edge.Width, "Width kept");
+        Equal(500.0, edge.Height, "Height kept");
+        Equal(area.Right - 100, edge.Left, "Left kept");
+        Equal(area.Bottom - 100, edge.Top, "Top kept");
+        edge.Close();
+    }
+
+    public static void Window_ShrunkCenterOwner_IsCentredInsideTheArea()
+    {
+        ToadTheme.Mode = ToadThemeMode.Light;
+        var owner = new ToadWindow { Title = "Owner", Width = 400, Height = 300, Left = 100, Top = 100, WindowStartupLocation = WindowStartupLocation.Manual, ShowActivated = false };
+        owner.Show();
+        DoEvents();
+        var area = WorkAreaOf(owner, out var toDip);
+        var w = new ToadWindow { Title = "Big", Width = 20000, Height = 20000, Owner = owner, WindowStartupLocation = WindowStartupLocation.CenterOwner, ShowActivated = false };
+        w.Show();
+        DoEvents();
+        Inside(area, BoundsOnScreen(w, toDip), "shrunk owned window");
+        w.Close();
+        owner.Close();
+    }
+
+    public static void Window_SizeToContentThatFits_KeepsItsMaximum()
+    {
+        ToadTheme.Mode = ToadThemeMode.Light;
+        var w = new ToadWindow { Title = "Small", Width = 500, SizeToContent = SizeToContent.Height, Content = new Border { Height = 100 }, WindowStartupLocation = WindowStartupLocation.CenterScreen, ShowActivated = false };
+        w.Show();
+        DoEvents();
+        Equal(double.PositiveInfinity, w.MaxHeight, "MaxHeight untouched");
+        Equal(SizeToContent.Height, w.SizeToContent, "SizeToContent untouched");
+        w.Close();
     }
 
     public static void Window_SizeToContentHeight_IsCappedByWorkArea()
@@ -91,6 +119,11 @@ public static class WorkAreaChecks
         var area = WorkAreaOf(w, out var toDip);
         True(w.ActualHeight <= area.Height + 1, $"height {w.ActualHeight} is not above the work area {area.Height}");
         Inside(area, BoundsOnScreen(w, toDip), "content-sized window");
+        // The cap served the first layout only: the maximum is given back and the window can be resized later.
+        WaitUntil(() => { DoEvents(); return double.IsPositiveInfinity(w.MaxHeight); }, "the cap lifted after the first render");
+        w.Height = area.Height - 100;
+        DoEvents();
+        Equal(area.Height - 100, w.Height, "later resize is not held back");
         w.Close();
     }
 

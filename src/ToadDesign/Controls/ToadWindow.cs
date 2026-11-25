@@ -213,11 +213,27 @@ public class ToadWindow : Window
             (monitor.rcWork.Right - monitor.rcWork.Left) * toDip, (monitor.rcWork.Bottom - monitor.rcWork.Top) * toDip);
         if (work.Width <= 0 || work.Height <= 0) return;
 
-        // A content-sized dimension ignores Width and Height; cap it so that the content measure respects the area.
-        if (SizeToContent == SizeToContent.Width || SizeToContent == SizeToContent.WidthAndHeight) MaxWidth = Math.Min(MaxWidth, work.Width);
-        if (SizeToContent == SizeToContent.Height || SizeToContent == SizeToContent.WidthAndHeight) MaxHeight = Math.Min(MaxHeight, work.Height);
+        // A content-sized dimension ignores Width and Height: its measured size is the window's current one. When that
+        // exceeds the area, cap the dimension until the first render; OnContentRendered lifts the cap again.
+        var contentWidth = SizeToContent == SizeToContent.Width || SizeToContent == SizeToContent.WidthAndHeight;
+        var contentHeight = SizeToContent == SizeToContent.Height || SizeToContent == SizeToContent.WidthAndHeight;
+        var actualWidth = (rect.Right - rect.Left) * toDip;
+        var actualHeight = (rect.Bottom - rect.Top) * toDip;
+        if (contentWidth && actualWidth > work.Width + 0.5)
+        {
+            _cappedWidth = true;
+            _originalMaxWidth = MaxWidth;
+            MaxWidth = Math.Min(MaxWidth, work.Width);
+        }
 
-        var size = new Size(double.IsNaN(Width) ? (rect.Right - rect.Left) * toDip : Width, double.IsNaN(Height) ? (rect.Bottom - rect.Top) * toDip : Height);
+        if (contentHeight && actualHeight > work.Height + 0.5)
+        {
+            _cappedHeight = true;
+            _originalMaxHeight = MaxHeight;
+            MaxHeight = Math.Min(MaxHeight, work.Height);
+        }
+
+        var size = new Size(contentWidth || double.IsNaN(Width) ? actualWidth : Width, contentHeight || double.IsNaN(Height) ? actualHeight : Height);
         var fitted = FitToWorkArea(size, new Size(MinWidth, MinHeight), work);
         var resized = fitted.Width < size.Width || fitted.Height < size.Height;
         // The minimums first: a minimum above the area would win over the smaller size.
@@ -226,16 +242,38 @@ public class ToadWindow : Window
         if (!double.IsNaN(Width) && fitted.Width < Width) Width = fitted.Width;
         if (!double.IsNaN(Height) && fitted.Height < Height) Height = fitted.Height;
 
-        // Centre a window that had to shrink; move one that still sticks out of the area back into it.
-        var left = rect.Left * toDip;
-        var top = rect.Top * toDip;
-        var sticksOut = left < work.Left || top < work.Top || left + fitted.Width > work.Right || top + fitted.Height > work.Bottom;
-        if (!resized && !sticksOut) return;
-        var target = resized
-            ? new Point(work.Left + (work.Width - fitted.Width) / 2, work.Top + (work.Height - fitted.Height) / 2)
-            : new Point(Math.Max(work.Left, Math.Min(left, work.Right - fitted.Width)), Math.Max(work.Top, Math.Min(top, work.Bottom - fitted.Height)));
+        // Only a window that had to shrink is moved: centred on its owner when it is centred on it, else in the area,
+        // and kept inside the area. A window whose size fits stays where it is, even if it straddles monitors.
+        if (!resized) return;
+        var centre = new Point(work.Left + work.Width / 2, work.Top + work.Height / 2);
+        if (ownerHandle != IntPtr.Zero && NativeMethods.GetWindowRect(ownerHandle, out var ownerRect))
+            centre = new Point((ownerRect.Left + ownerRect.Right) / 2.0 * toDip, (ownerRect.Top + ownerRect.Bottom) / 2.0 * toDip);
+        var x = Math.Max(work.Left, Math.Min(centre.X - fitted.Width / 2, work.Right - fitted.Width));
+        var y = Math.Max(work.Top, Math.Min(centre.Y - fitted.Height / 2, work.Bottom - fitted.Height));
         // Moved in pixels on the handle: Left and Top would be converted with the DPI of the window's current monitor.
-        NativeMethods.SetWindowPos(handle, IntPtr.Zero, (int)Math.Round(target.X / toDip), (int)Math.Round(target.Y / toDip), 0, 0, SWP_NOSIZE | SWP_NOZORDER | SWP_NOACTIVATE);
+        NativeMethods.SetWindowPos(handle, IntPtr.Zero, (int)Math.Round(x / toDip), (int)Math.Round(y / toDip), 0, 0, SWP_NOSIZE | SWP_NOZORDER | SWP_NOACTIVATE);
+    }
+
+    private bool _cappedWidth, _cappedHeight;
+    private double _originalMaxWidth, _originalMaxHeight;
+
+    /// <inheritdoc/>
+    protected override void OnContentRendered(EventArgs e)
+    {
+        base.OnContentRendered(e);
+        if (!_cappedWidth && !_cappedHeight) return;
+        // The cap only served the first layout. Keep the capped size as a plain one and give the maximum back, so that
+        // resizing or maximizing on a bigger monitor is not held back (content sizing would grow the window again).
+        var width = ActualWidth;
+        var height = ActualHeight;
+        if (_cappedWidth) MaxWidth = _originalMaxWidth;
+        if (_cappedHeight) MaxHeight = _originalMaxHeight;
+        if (_cappedWidth) Width = width;
+        if (_cappedHeight) Height = height;
+        var keepWidth = !_cappedWidth && (SizeToContent == SizeToContent.Width || SizeToContent == SizeToContent.WidthAndHeight);
+        var keepHeight = !_cappedHeight && (SizeToContent == SizeToContent.Height || SizeToContent == SizeToContent.WidthAndHeight);
+        SizeToContent = keepWidth && keepHeight ? SizeToContent.WidthAndHeight : keepWidth ? SizeToContent.Width : keepHeight ? SizeToContent.Height : SizeToContent.Manual;
+        _cappedWidth = _cappedHeight = false;
     }
 
     private const uint SWP_NOSIZE = 0x0001, SWP_NOZORDER = 0x0004, SWP_NOACTIVATE = 0x0010;
